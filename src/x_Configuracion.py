@@ -15,7 +15,7 @@ class Config:
 
     
     # Mecanismos: cruzamiento y mutacion
-    M_inicializacion = 0       # Generación espontánea de individuos aleatorios
+    M_inicializacion = 0           # Generación espontánea de individuos aleatorios
     M_cruzamiento = 0              # Obtención de nuevos individuos por cruzamiento de existentes
     M_mutacion = 0                 # Modificacion genética de individuos existentes
 
