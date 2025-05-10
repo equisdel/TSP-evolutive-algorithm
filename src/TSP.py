@@ -1,8 +1,8 @@
-import random
-from Configuracion import *
+"""import random
+#from Configuracion import *
 from Mecanismos import *
 from Poblacion import Generacion
-from Data import *
+#from Data import *
 
 
 # MUTACION PARA MODIFICACION DE INDIVIDUOS EXISTENTES
@@ -66,8 +66,8 @@ if __name__ == "__main__":
     Config.M_cruzamiento = cruzamiento_simple           # 2 parámetros: p1, p2.
     Config.M_mutacion = mutacion_ponderada              # 1 parámetro: ind.
 
-    Data("data\p43.atsp")                               # lectura del archivo data/p43.atsp
+    #Data("data\p43.atsp")                               # lectura del archivo data/p43.atsp
 
     TSP_simulation()                                    # SIMULACION
 
-
+"""

@@ -33,11 +33,16 @@ class TSPInstanceParser:
 
 class TSPInstance:
 
-    def __init__(self, name, dimension, matrix, metadata=None):
-        self.name = name
-        self.dimension = dimension
-        self.matrix = matrix
-        self.metadata = metadata or {}
+    name = None
+    dimension = None
+    matrix = None
+    metadata = None
+
+    def __init__(cls, name, dimension, matrix, metadata=None):
+        cls.name = name
+        cls.dimension = dimension
+        cls.matrix = matrix
+        cls.metadata = metadata or {}
 
     def get_edge_cost(self, from_city, to_city):
         return self.matrix[from_city][to_city]

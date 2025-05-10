@@ -86,9 +86,9 @@ class TSPApp(QWidget):
 
 if __name__ == "__main__":
     
-    app = QApplication([])
+    app = QApplication([]) #
 
     window = TSPApp()
-    window.show() 
+    window.show()
 
     app.exec()

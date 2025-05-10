@@ -1,6 +1,6 @@
-import random
+"""import random
 from TSP import *
-from Configuracion import Config
+#from Configuracion import Config
 
 # INICIALIZACION DE INDIVIDUO
 
@@ -28,3 +28,4 @@ def cruzamiento_simple(p1, p2):
 def mutacion_ponderada(ind):
     values = ind.values
     return values
+"""
