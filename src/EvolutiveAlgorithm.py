@@ -1,5 +1,6 @@
 # it gathers all the parameters from configuration and it runs the simulation4
 from Poblacion import Generation
+from ParentSelection import ParentSelection
 # for test
 from TSPInstance import TSPInstanceParser, TSPInstance
 
@@ -40,6 +41,9 @@ class EvolutiveAlgorithm:
         cls.prob_crossing = 0.5
         cls.prob_mutation = 0.5
 
+        # constants that define the next generation
+        cls.const_mating_pool_size = cls.const_population_size
+
         # analytics: description of the execution
         cls.data_best_solution_gen = None  
             # generation:   best solution found for this instance in the current generation of the execution
@@ -61,13 +65,6 @@ class EvolutiveAlgorithm:
 
         min_gens = cls.const_min_generations
         gen_counter = 0
-
-        # primera generacion
-        actual_gen = Generation(mec_initialization=cls.mec_initialization, population_size=cls.const_population_size, instance_size=cls.instance.dimension, origin=cls.const_city_of_origin, instance=cls.instance) # primera generacion
-        actual_gen.display()
-        print(actual_gen.getBest()[1])
-        print(actual_gen.getBest()[0].display())
-        
         # mejores soluciones: se guarda la solucion, el fitness y la generación a la que pertenece. En el caso de la absoluta se guarda además cómo se obtuvo (literatura o id de ejecución previa)
         best_solution_abs_current = cls.data_best_solution_abs
         best_solution_abs_previous = None
@@ -76,10 +73,28 @@ class EvolutiveAlgorithm:
         best_solution_current_gen = actual_gen.getBest()
         best_solution_previous_gen = None
 
+        # primera generacion
+        actual_gen = Generation(mec_initialization=cls.mec_initialization, population_size=cls.const_population_size, instance_size=cls.instance.dimension, origin=cls.const_city_of_origin, instance=cls.instance) # primera generacion
+        actual_gen.display()
+        print(actual_gen.getBest()[1])
+        print(actual_gen.getBest()[0].display())
+
+
+        parent_selection = ParentSelection(cls.mec_parent_selection)
+
+        mating_pool_size = cls.const_mating_pool_size       # por defecto es igual al tamaño de la población
+
+        returned = parent_selection.run(mating_pool_size,[1,10,100])
+
+        print(returned)
+
         while (gen_counter > min_gens): # convergencia
             # registro de las mejores soluciones hasta el momento
 
             # seleccion de padres
+            population = [] # lista de los fitness (invertidos) en orden, debe tener el tamaño de la población
+            mating_pool = parent_selection(mating_pool_size,population)
+
 
             # cruzamiento
 
