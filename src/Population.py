@@ -1,17 +1,18 @@
 from typing import Counter
 from colorama import Fore, Back, Style
-from TSPInstance import TSPInstance
+#from TSPInstance import TSPInstance
 import random
 
 # Individual
 
 class Individual:
 
+    instance = None
     # Genera un nuevo individuo al azar
-    def __init__(self, generation, fun_inic,instance):
+    def __init__(self,generation, instance, fun_inic=None, values=None):
         self.generation = generation
         self.instance = instance
-        self.values = fun_inic(self,instance)
+        self.values = fun_inic(self,instance) if fun_inic is not None else values
 
     def mec_initialization_random(self,instance):
         values = []             # individuo <-> string de enteros
@@ -45,6 +46,9 @@ class Individual:
                     return True
         return False
     
+    def getValues(self):
+        return self.values
+
     def display(self):
         if (self.isValid()):
             print(Fore.GREEN,self.values,Style.RESET_ALL)     # VERDE: La solución es válida
@@ -83,12 +87,18 @@ class Generation:
 
     def mec_gen_initialization_random(self,population_size,instance):
         for i in range(0,population_size):
-            new_individual = Individual(self,Individual.mec_initialization_random,instance)
+            new_individual = Individual(self,instance,fun_inic=Individual.mec_initialization_random)
             self.individuals.insert(i,new_individual)    # generados al azar
             if new_individual.getCost() > Generation.max_cost:
                 Generation.max_cost = new_individual.getCost() + self.max_cost_offset
 
         #self.id = Generacion.counter
+
+    def getIndividual(self,index):
+        return self.individuals[index]
+    
+    def getIndividuals(self):
+        return list(self.individuals)
 
     def getBest(self):
         best = None
