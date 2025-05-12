@@ -25,15 +25,15 @@ class Crossover:
             values_size = len(parent1)
             r = random.randint(1,values_size-1)
             # first section
-            print(parent1,parent2)
+            #print(parent1,parent2)
             for i in range(0,r):
                 offspring1.append(parent1[i])
                 offspring2.append(parent2[i])
                 #print(offspring1,offspring2)
             # second section
             left_parent1, left_parent2 = [x for x in parent1 if x not in offspring2], [x for x in parent2 if x not in offspring1]
-            print(r,left_parent1,values_size-r+1)
-            print(r,left_parent2,values_size-r+1)
+            #print(r,left_parent1,values_size-r+1)
+            #print(r,left_parent2,values_size-r+1)
             for i in range(0,values_size-r-1):
                 offspring1.append(left_parent2[i])
                 offspring2.append(left_parent1[i])

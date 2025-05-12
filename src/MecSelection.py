@@ -48,9 +48,9 @@ class Selection:
                     break
         return selected
     
-    def uniform_selection(self,probabilities, sample_size=1):
+    def uniform_selection(self, probabilities, sample_size=1):
         selected = random.choices(range(len(probabilities)), k=sample_size)
-        #print("selected",selected)
+        #print(selected)
         return selected
     
     def mec_parent_selection_FPS(self,population,sample_size):
