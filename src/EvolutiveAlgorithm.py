@@ -82,8 +82,8 @@ class EvolutiveAlgorithm:
 
         # primera generacion
         actual_gen = Generation(mec_initialization=cls.mec_initialization, population_size=cls.const_population_size, instance_size=cls.instance.dimension, origin=cls.const_city_of_origin, instance=cls.instance) # primera generacion
-        actual_gen.display()
-        print(actual_gen.getBest()[1])
+        #actual_gen.display()
+        #print(actual_gen.getBest()[1])
         #print(actual_gen.getBest()[0].display())
 
         # mejores soluciones: se guarda la solucion, el fitness y la generación a la que pertenece. En el caso de la absoluta se guarda además cómo se obtuvo (literatura o id de ejecución previa)
@@ -94,10 +94,11 @@ class EvolutiveAlgorithm:
         best_solutions_abs = [] # starts at index 0 for generation 0
 
         parent_selection = Selection(cls.mec_parent_selection)
-        mating_pool_size = cls.const_mating_pool_size       # por defecto es igual al tamaño de la población
+        mating_pool_size = cls.const_population_size       # por defecto es igual al tamaño de la población
         parent_selection_within_mating_pool = Selection(None,"uniform_selection")
         parent_crossover = Crossover(cls.mec_parent_crossover)
-        offspring_pool_size = cls.const_offspring_pool_size
+        offspring_pool_size = cls.const_population_size
+        #print("offspring_pool_size:",offspring_pool_size)
         offspring_selection = Selection(None,internal_selection="uniform_selection")
         offspring_mutation = Mutation(cls.mec_individual_mutation)
 
@@ -106,11 +107,12 @@ class EvolutiveAlgorithm:
 
         while (gen_counter < min_gens): # convergencia
 
-            #print("Gen #",gen_counter)
-            #actual_gen.display()
             #print(actual_gen.getBest()[1])
             #print()
-            print(gen_counter)
+            #print(gen_counter)
+            #print("   Gen #",gen_counter)
+            #actual_gen.display()
+            #print("!!:",len(actual_gen.individuals))
 
             individuals = actual_gen.getIndividuals()
             
@@ -155,7 +157,7 @@ class EvolutiveAlgorithm:
             # obtencion de la nueva generacion y se repite el ciclo
             gen_counter += 1
 
-        print("END")
+        #print("END")
 
         cls.data_best_solutions_gen = best_solutions_gen
         cls.data_best_solutions_exe = best_solutions_exe

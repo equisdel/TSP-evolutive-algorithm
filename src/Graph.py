@@ -45,7 +45,7 @@ class Graph:
     
 
 if __name__ == "__main__":
-    random.seed(0)
+    #random.seed(0)
     instance = TSPInstanceParser.parse("../data/br17.atsp")
     ea = EvolutiveAlgorithm(instance,None)
     ea.run()

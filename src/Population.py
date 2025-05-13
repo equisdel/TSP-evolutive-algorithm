@@ -51,9 +51,9 @@ class Individual:
 
     def display(self):
         if (self.isValid()):
-            print(Fore.GREEN,self.values,Style.RESET_ALL)     # VERDE: La solución es válida
+            print(Fore.GREEN,self.values,Style.RESET_ALL,self.getCost())     # VERDE: La solución es válida
         else:
-            print(Fore.RED,self.values,Style.RESET_ALL)       # ROJO: La solución no es válida
+            print(Fore.RED,self.values,Style.RESET_ALL,self.getCost())       # ROJO: La solución no es válida
 
 
 # GENERATION
