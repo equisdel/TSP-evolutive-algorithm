@@ -1,4 +1,5 @@
 # it gathers all the parameters from configuration and it runs the simulation
+import json
 from components.Population import Generation, Individual
 from components.MecSelection import Selection
 from components.MecCrossover import Crossover
@@ -37,7 +38,7 @@ class EvolutiveAlgorithm:
 
         # mechanisms that define the next generation
         cls.mec_parent_selection = "TS"        # defines how the parents are selected for crossing
-        cls.mec_parent_crossover = "default"         # defines how the new individuals are generated from the parents
+        cls.mec_parent_crossover = "PMX"         # defines how the new individuals are generated from the parents
         cls.mec_individual_mutation = "flip"     # defines the mutations applied to some of the new individuals
         cls.mec_individual_survival = "default"     # defines the selection of survivors for the next generation
         cls.mec_offspring_selection = "uniform_selection"
@@ -58,8 +59,8 @@ class EvolutiveAlgorithm:
         cls.data_best_solutions_abs = []      
             # absolute:     best solution found for this instance (can be from literature or previous executions)
 
-    def writeLog():
-        # llamar al terminar
+    def write_log(self):
+        
         return
 
     def update_parameters(cls, metadata):
@@ -72,6 +73,7 @@ class EvolutiveAlgorithm:
 
     def get_best_solutions(self, generation, best_solution_exe, best_solution_abs):
         best_solution_gen = generation.getBest()[0].getCost()     
+        print("!",best_solution_gen)
         if (best_solution_exe is None or best_solution_gen < best_solution_exe):
             best_solution_exe = best_solution_gen
         if (best_solution_abs is None or best_solution_exe < best_solution_abs):
@@ -140,7 +142,7 @@ class EvolutiveAlgorithm:
                     for offspring in offsprings:
                         if len(offspring_pool) < offspring_pool_size:
                             offspring_pool.append(offspring)
-                #print(offspring_pool)
+                print(offspring_pool)
 
                 # mutaciones
                 """
@@ -158,12 +160,14 @@ class EvolutiveAlgorithm:
 
                 # obtencion de la nueva generacion y se repite el ciclo
                 gen_counter += 1
+                print("XXX,",gen_counter,"&&",min_gens)
 
             cls.data_best_solutions_gen = best_solutions_gen
             cls.data_best_solutions_exe = best_solutions_exe
             cls.data_best_solutions_abs = [best_solution_abs for x in range (0,cls.const_min_generations)]
 
         except Exception as e:
+            print(e)
             raise ValueError("An error occured during the execution of the Evolutive Algorithm:",e)
         
         finally:
