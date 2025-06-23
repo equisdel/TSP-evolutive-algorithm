@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QPushButton, QFileDialog, QTableWidget, QTableWidgetItem, QStackedWidget)
 from PySide6.QtCore import Qt
-from TSPInstance import TSPInstance, TSPInstanceParser
+from src.backend.TSPInstance import TSPInstance, TSPInstanceParser
 
 class TSPApp(QWidget):
 
@@ -61,7 +61,7 @@ class TSPApp(QWidget):
 
         if file_name:
             print(f"Selected file: {file_name}")
-            instance = TSPInstanceParser.parse(file_name)
+            instance = TSPInstanceParser.parse("../"+file_name)
             if instance:
                 print(instance.matrix)
                 self.display_matrix(instance)

@@ -1,7 +1,7 @@
 import random
 import time
-from TSPInstance import TSPInstanceParser
-from EvolutiveAlgorithm import EvolutiveAlgorithm
+from src.backend.TSPInstance import TSPInstanceParser
+from src.backend.EvolutiveAlgorithm import EvolutiveAlgorithm
 
 class TestPlatform:
 

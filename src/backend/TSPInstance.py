@@ -49,4 +49,7 @@ class TSPInstance:
 
     def total_cost(self, path):
         return sum(self.get_edge_cost(path[i], path[i + 1]) for i in range(len(path) - 1))
+    
+    def get_dimension(cls):
+        return cls.dimension
         
