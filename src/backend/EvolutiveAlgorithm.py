@@ -38,7 +38,7 @@ class EvolutiveAlgorithm:
 
         # mechanisms that define the next generation
         cls.mec_parent_selection = "TS"        # defines how the parents are selected for crossing
-        cls.mec_parent_crossover = "PMX"         # defines how the new individuals are generated from the parents
+        cls.mec_parent_crossover = "default"         # defines how the new individuals are generated from the parents
         cls.mec_individual_mutation = "flip"     # defines the mutations applied to some of the new individuals
         cls.mec_individual_survival = "default"     # defines the selection of survivors for the next generation
         cls.mec_offspring_selection = "uniform_selection"
@@ -46,6 +46,7 @@ class EvolutiveAlgorithm:
         # probabilities that define the next generation
         cls.prob_crossing = 0.5
         cls.prob_mutation = 1/(instance.get_dimension())
+        print(cls.prob_mutation,"[[[[[[]]]]]]")
 
         # constants that define the next generation
         cls.const_mating_pool_size = cls.const_population_size
@@ -173,6 +174,7 @@ class EvolutiveAlgorithm:
         finally:
             # tiene q escribir si o si en el log
             print(cls.data_best_solutions_exe)
+            print(cls.prob_mutation,"[[[[[[]]]]]]")
             return
 
 
@@ -181,6 +183,7 @@ if __name__=="__main__":
     instance = TSPInstanceParser.parse("./data/br17.atsp")
     ea = EvolutiveAlgorithm(instance,None)
     ea.run()
+    print(ea.prob_mutation,"[[[[[[]]]]]]")
     print(ea.data_best_solutions_abs)
 
 
