@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt
 
 class InstancesPage(QWidget):
 
-    def __init__(self):
+    def __init__(self,all_instances):
 
         super().__init__()
         

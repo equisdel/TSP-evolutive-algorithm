@@ -7,6 +7,7 @@ QMainWindow {
 QWidget {
     background-color:rgba(18, 18, 18, 0.5);
     color: #ffffff;
+    border-radius: 5px;
 }
 
 QPushButton {

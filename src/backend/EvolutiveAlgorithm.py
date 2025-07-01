@@ -11,7 +11,11 @@ class EvolutiveAlgorithm:
 
     # when we change from page 3 (parameters) to page 4 (execution) we create this Evolutive Algorithm
 
-    log_path = "..\stats\log_md"
+    log_path = "..\stats\log_md"    # ??
+    configuration = json({ 
+
+    })
+
 
     def __init__(cls,instance,metadata):            # metadata is a dictionary
 
@@ -27,7 +31,7 @@ class EvolutiveAlgorithm:
         cls.instance = instance            # access to current instance of TSP
 
         # initial population
-        cls.const_population_size = 50     # population size: fixed amount of individuals  
+        cls.const_population_size = 1000     # population size: fixed amount of individuals  
         cls.const_city_of_origin = 0       # city of origin: where the salesman starts, changes nothing
         cls.mec_initialization = "random"  # defines how the first generation is produced (at random by default)
 
@@ -38,7 +42,7 @@ class EvolutiveAlgorithm:
 
         # mechanisms that define the next generation
         cls.mec_parent_selection = "TS"        # defines how the parents are selected for crossing
-        cls.mec_parent_crossover = "default"         # defines how the new individuals are generated from the parents
+        cls.mec_parent_crossover = "PMX"         # defines how the new individuals are generated from the parents
         cls.mec_individual_mutation = "flip"     # defines the mutations applied to some of the new individuals
         cls.mec_individual_survival = "default"     # defines the selection of survivors for the next generation
         cls.mec_offspring_selection = "uniform_selection"
@@ -46,7 +50,6 @@ class EvolutiveAlgorithm:
         # probabilities that define the next generation
         cls.prob_crossing = 0.5
         cls.prob_mutation = 1/(instance.get_dimension())
-        print(cls.prob_mutation,"[[[[[[]]]]]]")
 
         # constants that define the next generation
         cls.const_mating_pool_size = cls.const_population_size
@@ -80,6 +83,12 @@ class EvolutiveAlgorithm:
         if (best_solution_abs is None or best_solution_exe < best_solution_abs):
             best_solution_abs = best_solution_exe
         return best_solution_gen, best_solution_exe, best_solution_abs      # returns best fitness from each scope
+
+    def get_default_configuration(cls):
+        # separates in areas (basic json that has to be here instead of class constants)
+        return []
+    
+
 
     def run(cls):
 
@@ -180,7 +189,7 @@ class EvolutiveAlgorithm:
 
 
 if __name__=="__main__":
-    instance = TSPInstanceParser.parse("./data/br17.atsp")
+    instance = TSPInstanceParser.parse("./data/ba6.atsp")
     ea = EvolutiveAlgorithm(instance,None)
     ea.run()
     print(ea.prob_mutation,"[[[[[[]]]]]]")
