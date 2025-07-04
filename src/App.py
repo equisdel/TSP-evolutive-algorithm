@@ -1,27 +1,28 @@
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QPushButton, QFileDialog, QTableWidget, QTableWidgetItem, QStackedWidget)
 from PySide6.QtCore import Qt
-from backend.TSPInstance import TSPInstance
+from backend.TSPInstance import TSPInstance, TSPInstanceParser
 from backend.EvolutiveAlgorithm import EvolutiveAlgorithm
 from frontend.pages.StartPage import StartPage
 from frontend.pages.InstancesPage import InstancesPage
-from frontend.pages.Colors import GridPage
 from frontend.pages.EAPage import EAPage
 from frontend.Header import Header
 from DataHandler import DataHandler
-import sqlite3
+
+
 
 class TSPApp(QWidget):
 
     def __init__(self):
 
         super().__init__()
+    
         # database connection
         db = DataHandler()
 
         # window setup
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
-        self.resize(800, 600)
         self.header = Header(self.showMinimized, self.close)
+        self.resize(800, 600)
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.header)
 
@@ -29,19 +30,22 @@ class TSPApp(QWidget):
         self.stacked_widget = QStackedWidget(self)
         self.layout.addWidget(self.stacked_widget)
 
-        self.stacked_widget.addWidget(self.ea_page)
         # page 1: start screen
-        self.start_page = StartPage(self.go_to_instances_page)
+        self.start_page = StartPage()
         self.stacked_widget.addWidget(self.start_page)      # add it to the stack for display
+        self.start_page.start_button_pushed.connect(self.go_to_instances_page)
 
         # page 2: instances page
-        self.instances_page = GridPage(self.go_to_ea_page,db)
+        self.instances_page = InstancesPage(db)
         self.stacked_widget.addWidget(self.instances_page)
+        self.instances_page.footer.next_button.clicked.connect(self.go_to_ea_page)
+
         #self.matrix_page = InstancesPage(db.get_all_instances)
         #self.stacked_widget.addWidget(self.matrix_page)     # add it to the stack for display
 
-        self.ea_page = EAPage(EvolutiveAlgorithm.default_configuration())
         # page 3: simulation parameters (modifiable by the user)
+        self.ea_page = EAPage()
+        self.stacked_widget.addWidget(self.ea_page)
 
         # page 4: run simulation (time, number of generations so far, best solution so far, convergence conjuction (green or red ligts))
 
@@ -53,10 +57,11 @@ class TSPApp(QWidget):
     def go_to_instances_page(self):
         self.stacked_widget.setCurrentWidget(self.instances_page)
 
-    def go_to_ea_page(self):
+    def go_to_ea_page(self,file_path):
+        self.instance = TSPInstanceParser.parse(file_path)
         self.stacked_widget.setCurrentWidget(self.ea_page)
 
-    
+
 
     def display_matrix(self, instance: TSPInstance):
         # Display the matrix in a QTableWidget

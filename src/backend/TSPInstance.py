@@ -38,11 +38,11 @@ class TSPInstance:
     matrix = None
     metadata = None
 
-    def __init__(cls, name, dimension, matrix, metadata=None):
-        cls.name = name
-        cls.dimension = dimension
-        cls.matrix = matrix
-        cls.metadata = metadata or {}
+    def __init__(self, name, dimension, matrix, metadata=None):
+        self.name = name
+        self.dimension = dimension
+        self.matrix = matrix
+        self.metadata = metadata or {}
 
     def get_edge_cost(self, from_city, to_city):
         return self.matrix[from_city][to_city]
@@ -50,6 +50,6 @@ class TSPInstance:
     def total_cost(self, path):
         return sum(self.get_edge_cost(path[i], path[i + 1]) for i in range(len(path) - 1))
     
-    def get_dimension(cls):
-        return cls.dimension
+    def get_dimension(self):
+        return self.dimension
         

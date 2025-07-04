@@ -4,30 +4,43 @@ from PySide6.QtWidgets import (
     QComboBox, QSpinBox, QCheckBox, QSlider, QWidget
 )
 from PySide6.QtCore import Qt
+from frontend.Footer import Footer
+from backend.Configuration import Configuration
+from frontend.pages.InstancesPage import InstancesPage
 
 class EAPage(QMainWindow):
     
     def __init__(self):
+   
         super().__init__()
 
-        self.setWindowTitle("Configuration Interface")
+    def showEvent(self, event):
+        config = Configuration(self.instance.get_dimension())    
+        json_config = config.get_json_config()    # this is what should load by default
+        
+        self.layout = QVBoxLayout()
         self.setGeometry(200, 200, 1000, 700)
-
         main_splitter = QSplitter(Qt.Horizontal)
-
         self.right_panel = self.create_right_panel()
+        # method to load default_config into the section on the right
         main_splitter.addWidget(self.right_panel)
         main_splitter.setStretchFactor(0, 1)  # 1/3 of the width
 
-        self.left_panel = self.create_vertical_tabs()
+
+
+        self.left_panel = self.create_vertical_tabs(json_config)
         main_splitter.addWidget(self.left_panel)
         main_splitter.setStretchFactor(1, 2)  # 2/3 of the width
 
-        self.setCentralWidget(main_splitter)
+        self.layout.addWidget(main_splitter)
+        self.layout.addWidget(Footer(print, print))  # sin stretch
 
-    def create_vertical_tabs(self):
+        central_widget = QWidget()
+        central_widget.setLayout(self.layout)
+        self.setCentralWidget(central_widget)
+        return super().showEvent(event)
 
-        # llamada a algoritmo evolutivo: JSON con todos los parámetros y los valores por defecto
+    def create_vertical_tabs(self, json_config):
 
         left_frame = QFrame()
         left_layout = QVBoxLayout()
@@ -41,23 +54,18 @@ class EAPage(QMainWindow):
         tab_layout = QVBoxLayout()
 
         # Add Sections as Expandable Tabs
-        for section_name in [
-            "Initial Population Settings",
-            "Parent Selection Settings",
-            "Parent Crossing Settings",
-            "Offspring Mutation Settings",
-            "Survivor Selection Settings",
-            "Convergency Settings",
-            "Advanced Settings"
-        ]:
-            group_box = QGroupBox(section_name)
-            group_box.setCheckable(True)  # Toggle Expand/Collapse
-            group_box.setChecked(False)  # Initially Collapsed
+        for section_name in list(json_config.keys()):
+            
+            print(section_name)
+            group_box = QGroupBox()
 
             group_layout = QVBoxLayout()
-            group_layout.addWidget(QLabel(f"Parameters for {section_name}:"))
-            group_layout.addWidget(QLineEdit("Parameter 1"))  # Example input
-            group_layout.addWidget(QLineEdit("Parameter 2"))  # Example input
+            label = QLabel(f"{section_name.upper()}")
+            label.setStyleSheet("font-weight: 800;")
+            group_layout.addWidget(label)
+            for parameter in (json_config[section_name]):
+                # parameter should tell its type and valid range (come with QtValidator?)
+                group_layout.addWidget(QLineEdit(parameter))
             group_box.setLayout(group_layout)
 
             tab_layout.addWidget(group_box)
@@ -99,6 +107,10 @@ class EAPage(QMainWindow):
 
         return right_frame
 
+    def load_configuration(self):
+        
+        instance = self.instancePage.get_instance()
+        print("I am in EAPage and the following should be instance: ",instance)
 
 if __name__ == "__main__":
     app = QApplication([])

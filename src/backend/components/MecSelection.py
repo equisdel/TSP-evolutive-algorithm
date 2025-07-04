@@ -76,7 +76,7 @@ class Selection:
             #print(probabilities)
             return self.internal_mec(probabilities,sample_size)
 
-    # TBS: Tournament Selection
+    # TS: Tournament Selection
     def mec_parent_selection_TS(self,population,sample_size,p=1.0,k=3):
         if (k > len(population)):
             raise ValueError("Tournament Selection: The parameter 'k' must be in the range [1,population_size]")
