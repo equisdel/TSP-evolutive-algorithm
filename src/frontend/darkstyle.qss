@@ -27,7 +27,17 @@ QPushButton:hover {
 QLineEdit {
     background-color: #2e2e2e;
     color: #ffffff;
-    border: 1px solid #444444;
+    /*border: 1px solid #444444;*/
+    border: none;
+    padding: 2px;
+}
+
+QComboBox {
+    background-color: #2e2e2e;
+    color: #ffffff;
+    /*border: 1px solid #444444;*/
+    border: none;
+    padding-left: 6px;
     padding: 2px;
 }
 

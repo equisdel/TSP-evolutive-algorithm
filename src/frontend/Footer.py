@@ -4,7 +4,7 @@ import sys
 
 class Footer(QWidget):
 
-    def __init__(self,on_click_back_button,on_click_next_button):
+    def __init__(self,initial_state_next_button=False):
         
         super().__init__()
         self.layout = QHBoxLayout()
@@ -21,15 +21,11 @@ class Footer(QWidget):
         self.layout.addStretch(1)
         self.layout.addWidget(self.next_button, alignment=Qt.AlignRight)
 
-        self.next_button.setEnabled(False)
-
-        self.back_button.clicked.connect(on_click_back_button)
-        self.next_button.clicked.connect(on_click_next_button)
+        self.next_button.setEnabled(initial_state_next_button)
 
         self.setLayout(self.layout)
 
     def enable_next(self):
-        print("enabled!!!")
         self.next_button.setEnabled(True)
 
 if __name__ == "__main__":

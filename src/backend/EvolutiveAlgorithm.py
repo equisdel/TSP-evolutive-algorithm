@@ -28,25 +28,25 @@ class EvolutiveAlgorithm:
         """
 
         # initial population
-        cls.const_population_size = cls.config["initial population"]["size"]     # population size: fixed amount of individuals  
-        cls.const_city_of_origin = cls.config["initial population"]["origin"]        # city of origin: where the salesman starts, changes nothing
-        cls.mec_initialization = cls.config["initial population"]["generation"]   # defines how the first generation is produced (at random by default)
+        cls.const_population_size = cls.config["initial population"]["size"].get_value()     # population size: fixed amount of individuals  
+        cls.const_city_of_origin = cls.config["initial population"]["origin"].get_value()        # city of origin: where the salesman starts, changes nothing
+        cls.mec_initialization = cls.config["initial population"]["generation"].get_value()   # defines how the first generation is produced (at random by default)
 
         # convergency related
-        cls.const_min_generations = cls.config["termination criteria"]["min generations"]    # lower bound to avoid early convergency
-        cls.const_max_generations = cls.config["termination criteria"]["max generations"]     # upper bound to avoid no convergency at all, can be avoided by being set to -1
-        cls.const_min_epsilon = cls.config["termination criteria"]["epsilon"]     # convergency related
+        cls.const_min_generations = cls.config["termination criteria"]["min generations"].get_value()    # lower bound to avoid early convergency
+        cls.const_max_generations = cls.config["termination criteria"]["max generations"].get_value()     # upper bound to avoid no convergency at all, can be avoided by being set to -1
+        cls.const_min_epsilon = cls.config["termination criteria"]["epsilon"].get_value()     # convergency related
 
         # mechanisms that define the next generation
-        cls.mec_parent_selection = cls.config["parent selection"]["mechanism"]        # defines how the parents are selected for crossing
-        cls.mec_parent_crossover = cls.config["crossover"]["mechanism"]        # defines how the new individuals are generated from the parents
-        cls.mec_individual_mutation = "flip"     # defines the mutations applied to some of the new individuals
-        cls.mec_individual_survival = "default"     # defines the selection of survivors for the next generation
+        cls.mec_parent_selection = cls.config["parent selection"]["mechanism"].get_value()        # defines how the parents are selected for crossing
+        cls.mec_parent_crossover = cls.config["crossover"]["mechanism"].get_value()        # defines how the new individuals are generated from the parents
+        cls.mec_individual_mutation = cls.config["offspring mutation"]["mechanism"].get_value()     # defines the mutations applied to some of the new individuals
+        cls.mec_individual_survival = cls.config["survivor selection"]["mechanism"].get_value()    # defines the selection of survivors for the next generation
         cls.mec_offspring_selection = "uniform_selection"
-
         # probabilities that define the next generation
-        cls.prob_crossing = cls.config["crossover"]["probability"]
-        cls.prob_mutation = cls.config["mutation"]["probability"]  #1/(instance.get_dimension())
+        cls.prob_crossing = cls.config["crossover"]["probability"].get_value()
+        cls.prob_mutation = cls.config["offspring mutation"]["probability"].get_value()  #1/(instance.get_dimension())
+        print("ok") 
 
         # constants that define the next generation
         cls.const_mating_pool_size = cls.const_population_size
@@ -67,7 +67,7 @@ class EvolutiveAlgorithm:
         try:
 
             cls.load_parameters()       # loads the parameters
-
+            print("de verdad corre")
             min_gens = cls.const_min_generations
             gen_counter = 0
 
@@ -97,7 +97,7 @@ class EvolutiveAlgorithm:
 
                 #print(actual_gen.getBest()[1])
                 #print()
-                #print(gen_counter)
+                print(gen_counter)
                 #print("   Gen #",gen_counter)
                 actual_gen.display()
                 #print("!!:",len(actual_gen.individuals))
@@ -152,7 +152,7 @@ class EvolutiveAlgorithm:
         
         finally:
             # tiene q escribir si o si en el log
-            print(cls.data_best_solutions_exe)
+            #print(cls.data_best_solutions_exe)
             return
 
 

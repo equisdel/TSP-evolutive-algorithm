@@ -52,4 +52,7 @@ class TSPInstance:
     
     def get_dimension(self):
         return self.dimension
+    
+    def get_absolute_best(self):
+        return None
         

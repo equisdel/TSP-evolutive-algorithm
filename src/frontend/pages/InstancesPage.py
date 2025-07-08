@@ -7,13 +7,20 @@ from backend.TSPInstance import TSPInstanceParser
 class InstancesPage(QWidget):
 
     file_was_selected = Signal(str)     # emits when a file is selected
-    next_button_pushed = Signal(str)     # emits when a file is selected
+    next_button_pushed = Signal(str)
+    back_button_pushed = Signal(str)
+
+    def set_next_button_pushed(self):
+        self.next_button_pushed.emit(self.file_path)
+
+    def set_back_button_pushed(self):
+        self.back_button_pushed.emit("back home")
     
-    def __init__(self,db):
+    def __init__(self,main):
         
         super().__init__()
 
-        self.db = db
+        self.db = main.db
         full_layout = QVBoxLayout()
         full_layout.setSpacing(10)
         # Create a grid layout
@@ -62,8 +69,7 @@ class InstancesPage(QWidget):
             font-style: normal;
             font-family: Arial, sans-serif;
         """)
-        requirements_label.setWordWrap(False)  # Allow text wrapping
-
+     
         layout_left_top.addWidget(title,stretch=1)
         layout_left_top.addWidget(requirements_label,stretch=10)
 
@@ -111,8 +117,10 @@ class InstancesPage(QWidget):
         # Set the layout for the widget
     
         full_layout.addLayout(layout, stretch=1)
-        self.footer = Footer(print,print)
+        self.footer = Footer()
         self.file_was_selected.connect(self.footer.enable_next)
+        self.footer.next_button.clicked.connect(self.set_next_button_pushed)
+        self.footer.back_button.clicked.connect(self.set_back_button_pushed)
         full_layout.addWidget(self.footer, stretch=0)
         self.setLayout(full_layout)
 
@@ -149,6 +157,7 @@ class InstancesPage(QWidget):
         self.file_path = file_path
         if file_path is not None:
             self.file_was_selected.emit(file_path)
+
 
     def load_file(self):
         import os
