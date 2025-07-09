@@ -29,8 +29,8 @@ class Configuration:
             "fitness evaluation": {
                 "type":             Parameter("array",  0,      ["linear"])
             },
-            "termination condition (disjunction)": {
-                "min generations":  Parameter("int",    100,    [5,100]),  
+            "termination criteria": {
+                "min generations":  Parameter("int",    100,    [1,1000]),  
                 "max generations":  Parameter("int",    -1,     [-1,100000]),     
                 "time limit [s]":   Parameter("int",    -1,     [-1,3600]), 
                 "target fitness":   Parameter("int",    -1,     [-1,1e9]),
@@ -87,16 +87,28 @@ class Parameter:
     def set_value_to_default(self):
         self.value = self.default
     
+    def _format_value(self,value):
+        if self.type == "int":
+            return int(value)
+        elif self.type == "float" or self.type == "prob":
+            return float(value)
+        else: 
+            return value
+
     def set_value(self, value):
-        if self.validate(value):
-            self.value = value
+        print(value)
+        formated_value = self._format_value(value)
+        if self.validate(formated_value):
+            self.value = formated_value
         else: 
             print("Valor fuera de rango! Debe estar dentro de:"+self.range)
 
     def validate(self,value):
         # additional checking in case frontend checking fails
+        print("validation",value,"range",self.range)
         if self.type == "int":
-            return isinstance(value, (int)) and self.range[0] <= value <= self.range[1]
+            print(isinstance(value, (int)))
+            return isinstance(int(value), (int)) and self.range[0] <= value <= self.range[1]
         elif self.type == "prob":
             return isinstance(value, (int, float)) and 0.0 <= value <= 1.0
         elif self.type == "bool":

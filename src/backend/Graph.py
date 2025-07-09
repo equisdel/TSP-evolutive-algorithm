@@ -1,18 +1,15 @@
 import matplotlib
 import random
-from TSPInstance import TSPInstanceParser
-from EvolutiveAlgorithm import *
+from backend.TSPInstance import TSPInstanceParser
+from backend.EvolutiveAlgorithm import *
 
-matplotlib.use('TkAgg')  # or 'Agg' if no GUI is needed
+matplotlib.use('QtAgg')  # or 'Agg' if no GUI is needed
 
 import matplotlib.pyplot as plt
 
-
-# singleton
 class Graph:
     
-    def __init__(self,instance,evolutive_algorithm):
-        self.instance = instance
+    def __init__(self,evolutive_algorithm):
         self.evolutive_algorithm = evolutive_algorithm
 
     def display(self,graph_name):
@@ -49,7 +46,7 @@ if __name__ == "__main__":
     instance = TSPInstanceParser.parse("./data/br17.atsp")
     ea = EvolutiveAlgorithm(instance,None)
     ea.run()
-    g = Graph(instance,ea)
+    g = Graph(ea)
     g.display("best_solutions_graph")
 
     

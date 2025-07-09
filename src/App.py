@@ -6,6 +6,7 @@ from backend.Configuration import Configuration
 from frontend.pages.StartPage import StartPage
 from frontend.pages.InstancesPage import InstancesPage
 from frontend.pages.EAConfigPage import EAConfigPage
+from frontend.pages.EARunningPage import EARunningPage
 from frontend.Header import Header
 from DataHandler import DataHandler
 
@@ -14,6 +15,8 @@ from DataHandler import DataHandler
 class TSPApp(QWidget):
 
     instance_created = Signal(object)
+    configuration_created = Signal(object)
+    evolutionary_algorithm_created = Signal(object)
 
     def __init__(self):
 
@@ -54,7 +57,10 @@ class TSPApp(QWidget):
         self.ea_config_page.back_button_pushed.connect(self.go_to_instances_page)
 
         # page 4: run simulation (time, number of generations so far, best solution so far, convergence conjuction (green or red ligts))
-
+        self.ea_running_page = EARunningPage(self.evolutionary_algorithm_created)
+        self.stacked_widget.addWidget(self.ea_running_page)
+        self.ea_running_page.next_button_pushed.connect(self.go_to_start_page)
+        self.ea_running_page.back_button_pushed.connect(self.go_to_ea_config_page)
         # page 5: simulation results (when did we get the best solution, costo computacional y temporal, otras métricas). Guardado de los datos.
 
     def go_to_start_page(self):
@@ -67,17 +73,13 @@ class TSPApp(QWidget):
         self.instance = TSPInstanceParser.parse(file_path)      # creación de la instancia
         self.instance_created.emit(self.instance)
         self.stacked_widget.setCurrentWidget(self.ea_config_page)
-
-    def go_to_ea_running_page(self,file_path):
-        self.config = Configuration(self.instance.get_dimension())      # creación de la configuración
-        self.evolutive_algorithm = EvolutiveAlgorithm(self.instance, self.config)   # creación del algoritmo como tal
-        print("corre")
-        self.evolutive_algorithm.run()
-        #self.instance_created.emit(self.instance)
-        #self.stacked_widget.setCurrentWidget(self.ea_config_page)
-
-
-
+    
+    def go_to_ea_running_page(self,config):
+        self.config = config      # creación de la configuración dentro de la página
+        self.evolutive_algorithm = EvolutiveAlgorithm(self.instance, self.config)   # creación del algoritmo con ambas partes ya resueltas
+        self.evolutionary_algorithm_created.emit(self.evolutive_algorithm)
+        self.stacked_widget.setCurrentWidget(self.ea_running_page)
+    
     def display_matrix(self, instance: TSPInstance):
         # Display the matrix in a QTableWidget
         matrix = instance.matrix

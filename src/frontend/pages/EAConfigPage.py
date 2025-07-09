@@ -11,14 +11,13 @@ from frontend.pages.InstancesPage import InstancesPage
 
 class EAConfigPage(QMainWindow):
     
-    next_button_pushed = Signal(str)     # emits when a file is selected
+    next_button_pushed = Signal(object)     # emits when a file is selected
     back_button_pushed = Signal(str)
 
     def set_next_button_pushed(self):
         self.collect_inputs()
-        print()
         print(self.config.display_json_config())
-        self.next_button_pushed.emit("")
+        self.next_button_pushed.emit(self.config)
 
     def set_back_button_pushed(self):
         self.back_button_pushed.emit("")
@@ -160,7 +159,6 @@ class EAConfigPage(QMainWindow):
                 #inputs[combo.objectName()] = combo.currentText()
 
         print("Collected inputs:", inputs)
-
 
     def create_right_panel(self):
         right_frame = QFrame()

@@ -28,9 +28,9 @@ class EvolutiveAlgorithm:
         """
 
         # initial population
-        cls.const_population_size = cls.config["initial population"]["size"].get_value()     # population size: fixed amount of individuals  
-        cls.const_city_of_origin = cls.config["initial population"]["origin"].get_value()        # city of origin: where the salesman starts, changes nothing
-        cls.mec_initialization = cls.config["initial population"]["generation"].get_value()   # defines how the first generation is produced (at random by default)
+        cls.const_population_size = cls.config["initialization"]["population size"].get_value()     # population size: fixed amount of individuals  
+        cls.const_city_of_origin = cls.config["initialization"]["city of origin"].get_value()        # city of origin: where the salesman starts, changes nothing
+        cls.mec_initialization = cls.config["initialization"]["mechanism"].get_value()   # defines how the first generation is produced (at random by default)
 
         # convergency related
         cls.const_min_generations = cls.config["termination criteria"]["min generations"].get_value()    # lower bound to avoid early convergency
@@ -63,6 +63,8 @@ class EvolutiveAlgorithm:
     # EXECUTION
 
     def run(cls):
+
+        print("before")
 
         try:
 
