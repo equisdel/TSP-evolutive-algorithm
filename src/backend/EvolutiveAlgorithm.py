@@ -1,17 +1,22 @@
 # it gathers all the parameters from configuration and it runs the simulation
 from backend.components.Population import Generation, Individual
 from backend.components.MecSelection import Selection
+from backend.components.MecSurvivorSelection import SurvivorSelection
 from backend.components.MecCrossover import Crossover
 from backend.components.MecMutation import Mutation
 # for test
 from backend.TSPInstance import TSPInstanceParser
+from PySide6.QtCore import QObject, Signal
+import random
 
-
-class EvolutiveAlgorithm:
+class EvolutiveAlgorithm(QObject):
 
     # when we change from page 3 (parameters) to page 4 (execution) we create this Evolutive Algorithm
+    
+    data_updated = Signal(list, list, list)
 
-    def __init__(cls,instance,config):           
+    def __init__(cls,instance,config):    
+        super().__init__()        
         cls.config = config.get_json_config()  # has its id
         cls.instance = instance     # has its id, access to current instance of TSP
 
@@ -41,8 +46,8 @@ class EvolutiveAlgorithm:
         cls.mec_parent_selection = cls.config["parent selection"]["mechanism"].get_value()        # defines how the parents are selected for crossing
         cls.mec_parent_crossover = cls.config["crossover"]["mechanism"].get_value()        # defines how the new individuals are generated from the parents
         cls.mec_individual_mutation = cls.config["offspring mutation"]["mechanism"].get_value()     # defines the mutations applied to some of the new individuals
-        cls.mec_individual_survival = cls.config["survivor selection"]["mechanism"].get_value()    # defines the selection of survivors for the next generation
-        cls.mec_offspring_selection = "uniform_selection"
+        cls.mec_survivor_selection = cls.config["survivor selection"]["mechanism"].get_value()    # defines the selection of survivors for the next generation
+        # cls.mec_offspring_selection = "uniform_selection"
         # probabilities that define the next generation
         cls.prob_crossing = cls.config["crossover"]["probability"].get_value()
         cls.prob_mutation = cls.config["offspring mutation"]["probability"].get_value()  #1/(instance.get_dimension())
@@ -62,14 +67,11 @@ class EvolutiveAlgorithm:
 
     # EXECUTION
 
-    def run(cls):
-
-        print("before")
+    def run(cls,ea):
 
         try:
 
             cls.load_parameters()       # loads the parameters
-            print("de verdad corre")
             min_gens = cls.const_min_generations
             gen_counter = 0
 
@@ -86,15 +88,18 @@ class EvolutiveAlgorithm:
             best_solutions_exe = [] # starts at index 0 for generation 0
             best_solutions_abs = [] # starts at index 0 for generation 0
 
+            # seteo de configuracion del algoritmo
+            population_size = cls.const_population_size
             parent_selection = Selection(cls.mec_parent_selection)
-            mating_pool_size = cls.const_population_size       # por defecto es igual al tamaño de la población
-            parent_selection_within_mating_pool = Selection(None,"uniform_selection")
+            mating_pool_size = population_size        # por defecto es igual al tamaño de la población
+            #parent_selection_within_mating_pool = Selection(None,"uniform_selection")  # error conceptual, no existe
             parent_crossover = Crossover(cls.mec_parent_crossover)
-            offspring_pool_size = cls.const_population_size
-            #print("offspring_pool_size:",offspring_pool_size)
-            offspring_selection = Selection(None,internal_selection="uniform_selection")
+            offspring_pool_size = population_size     # por defecto es igual al tamaño de la población
             offspring_mutation = Mutation(cls.mec_individual_mutation)
+            offspring_selection = Selection(None,internal_selection="uniform_selection")
+            survivor_selection = SurvivorSelection(cls.mec_survivor_selection)
 
+            #while (gen_counter == 0): # convergencia
             while (gen_counter < min_gens): # convergencia
 
                 #print(actual_gen.getBest()[1])
@@ -117,31 +122,43 @@ class EvolutiveAlgorithm:
                 # seleccion de padres: definición del mating pool
                 population = actual_gen.getFitnessList()    # lista de los fitness en orden, debe tener el tamaño de la población
                 #print("List of fitness:",population)
-                mating_pool = parent_selection.run(population,mating_pool_size)
-                #print("Mating pool:",mating_pool)
+                mating_pool = parent_selection.run(population,mating_pool_size) # el tamaño del mating pool es igual al tamaño poblacional
+                print("Mating pool:",mating_pool)
 
                 # cruzamiento
                 offspring_pool = []
-                while (len(offspring_pool) < offspring_pool_size):
-                    parents = parent_selection_within_mating_pool.run(list(individuals),2)
-                    offsprings = parent_crossover.run([individuals[parents[0]],individuals[parents[1]]])
+                random.shuffle(mating_pool)
+                parents1_indexes, parents2_indexes = mating_pool[0:int(population_size/2)], mating_pool[int(population_size/2):]
+                for i in range(0,int(population_size/2)):
+                    #print("indexes of adam and eve:",parents1_indexes[i],parents2_indexes[i])
+                    #print("adam and eve themselves:",[individuals[parents1_indexes[i]]],[individuals[parents2_indexes[i]]])
+                    #print("their fitnesses:",individuals[parents1_indexes[i]].getFitness(),individuals[parents2_indexes[i]].getFitness())
+                    #print("their values:",individuals[parents1_indexes[i]].getValues(),individuals[parents2_indexes[i]].getValues())
+                    offsprings = parent_crossover.run([individuals[parents1_indexes[i]],individuals[parents2_indexes[i]]])
                     for offspring in offsprings:
-                        if len(offspring_pool) < offspring_pool_size:
-                            offspring_pool.append(offspring)
-                print(offspring_pool)
+                        offspring_pool.append(offspring)
+                print(len(offspring_pool) == population_size)
 
-                # mutaciones
+                # mutaciones sobre nuevos individuos
                 selected_offsprings_index = offspring_selection.run(population=offspring_pool,sample_size=int(cls.const_population_size/2)) # indexes
                 for i in selected_offsprings_index:
                     offspring_pool[i] = offspring_mutation.run(offspring_pool[i])
                 
-                # seleccion de sobrevivientes
+                # seleccion de sobrevivientes: esto está mal
+                """
                 actual_gen.individuals = []
+                """
+                new_individuals = []
                 for offspring in offspring_pool:
                     new_individual = Individual(actual_gen,cls.instance,values=offspring)
-                    actual_gen.individuals.append(new_individual)
+                    new_individuals.append(new_individual)
+
+                # esto es reemplazo generacional
+                print("loslsl")
+                actual_gen.individuals = survivor_selection.run(actual_gen.individuals,new_individuals)
 
                 # obtencion de la nueva generacion y se repite el ciclo
+                ea.data_updated.emit(best_solutions_gen, best_solutions_exe, [best_solution_abs for x in range (0,cls.const_min_generations)])
                 gen_counter += 1
 
             cls.data_best_solutions_gen = best_solutions_gen

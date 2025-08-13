@@ -25,6 +25,7 @@ class Crossover:
         else:
             offspring1, offspring2 = [], []
             parent1, parent2 = parents[0].getValues(), parents[1].getValues()    # individual
+            #parent1, parent2 = parents[0], parents[1]
             values_size = len(parent1)
             r = random.randint(1,values_size-1)
             # first section
@@ -60,6 +61,8 @@ class Crossover:
     def run(self,parents):
         copy_parent1, copy_parent2 = parents[0].getValues().copy()[1:-1], parents[1].getValues().copy()[1:-1]
         origin = parents[0].getValues()[0]
+        #copy_parent1, copy_parent2 = parents[0].copy()[1:-1], parents[1].copy()[1:-1]
+        #origin = parents[0][0]
         #parents = individual.copy()[1:-1]   # removes origin for faster processing
         offsprings = self.mec([copy_parent1,copy_parent2])
         return [ [origin] + offsprings[0] + [origin], [origin] + offsprings[1] + [origin]] 

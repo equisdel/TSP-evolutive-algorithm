@@ -3,7 +3,8 @@ import random
 from backend.TSPInstance import TSPInstanceParser
 from backend.EvolutiveAlgorithm import *
 
-matplotlib.use('QtAgg')  # or 'Agg' if no GUI is needed
+#matplotlib.use('QtAgg')  # or 'Agg' if no GUI is needed
+matplotlib.use('QtAgg')
 
 import matplotlib.pyplot as plt
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     #random.seed(0)
     instance = TSPInstanceParser.parse("./data/br17.atsp")
     ea = EvolutiveAlgorithm(instance,None)
-    ea.run()
+    ea.run(ea)
     g = Graph(ea)
     g.display("best_solutions_graph")
 

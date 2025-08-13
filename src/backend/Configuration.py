@@ -23,7 +23,7 @@ class Configuration:
                 "probability":      Parameter("prob",   0.15,   [0,1]),
             },
             "survivor selection": {
-                "mechanism":        Parameter("array",  0,      ["default"]),
+                "mechanism":        Parameter("array",  0,      ["generational"]),
                 "probability":      Parameter("prob",   0.0,    [0,1]),
             },
             "fitness evaluation": {

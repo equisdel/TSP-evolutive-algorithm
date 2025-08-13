@@ -61,6 +61,7 @@ class TSPApp(QWidget):
         self.stacked_widget.addWidget(self.ea_running_page)
         self.ea_running_page.next_button_pushed.connect(self.go_to_start_page)
         self.ea_running_page.back_button_pushed.connect(self.go_to_ea_config_page)
+        
         # page 5: simulation results (when did we get the best solution, costo computacional y temporal, otras métricas). Guardado de los datos.
 
     def go_to_start_page(self):

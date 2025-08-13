@@ -1,6 +1,29 @@
+import pyqtgraph as pg
 from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QStackedWidget, QLabel, QPushButton
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal,Qt
 from backend.Graph import Graph
+pg.setConfigOption('foreground', 'k')  # white foreground (axes, labels, text)
+
+class GraphWidget(pg.PlotWidget):
+    
+
+    def __init__(self):
+        super().__init__()
+        self.setBackground('k')
+        self.addLegend()
+
+        # Plot lines with color and marker similar to your matplotlib style
+        self.curve_gen = self.plot(pen=pg.mkPen('b', width=2), name="Best: Generation",
+                                   symbol='o', symbolSize=6, symbolBrush='b')
+        self.curve_exe = self.plot(pen=pg.mkPen('y', width=2), name="Best: Execution")
+        self.curve_abs = self.plot(pen=pg.mkPen('g', style=Qt.DotLine), name="Best: Absolute")
+
+    def update_data(self, best_gen, best_exe, best_abs):
+        print("update")
+        x = list(range(len(best_gen)))
+        self.curve_gen.setData(x, best_gen)
+        self.curve_exe.setData(x, best_exe)
+        self.curve_abs.setData(x, best_abs)
 
 class EARunningPage(QWidget):
     
@@ -17,8 +40,14 @@ class EARunningPage(QWidget):
 
         super().__init__()
 
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+        self.layout = QVBoxLayout(self)
+
+        self.plotWidget = GraphWidget()
+        self.layout.addWidget(self.plotWidget) 
+        #self.plotWidget.plot([1, 2, 3])
+
+        self.stacked_widget = QStackedWidget()
+        self.layout.addWidget(self.stacked_widget)
 
         self.stacked_widget = QStackedWidget(self)
         self.layout.addWidget(self.stacked_widget)
@@ -44,13 +73,18 @@ class EARunningPage(QWidget):
 
         self.run_button.clicked.connect(self.run_ea)
         ea_created.connect(self._on_ea_created)
+
+    def update_best(self, gen, exe, abs):
+        self.ea_run_label.setText(str(gen[-1:])+":"+str(exe[-1:])+":"+str(abs[-1:]))
     
     def run_ea(self):
-        self.ea.run()
+        self.ea.data_updated.connect(self.plotWidget.update_data)
+        self.ea.data_updated.connect(self.update_best)
+        self.ea.run(self.ea)
+        ##pg.plot(self.ea.best_solutions_gen)
         self.graph = Graph(self.ea)
         self.graph.display("best_solutions_graph")
     
     def _on_ea_created(self,ea):
-        print("luchi")
         self.ea = ea
 

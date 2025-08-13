@@ -35,6 +35,7 @@ class Individual:
     def getFitness(self):
         cost = self.getCost()
         fitness = -cost + Generation.max_cost
+        #fitness = cost
         return fitness
 
     def isValid(self):

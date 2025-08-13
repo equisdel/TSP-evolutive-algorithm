@@ -10,7 +10,7 @@ class TestPlatform:
         self.ea = ea
 
     def run(self,population_size,min_generations):
-        self.ea.run()
+        self.ea.run(self.ea)
         return ea.data_best_solutions_abs[0]
 
         

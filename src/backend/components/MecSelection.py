@@ -2,7 +2,6 @@ from itertools import accumulate
 import random
 import math
 
-
 class Selection:
 
     default = "FPS"     # Fitness Proportional Selection
