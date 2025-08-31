@@ -1,6 +1,6 @@
 class Configuration:
 
-    MS = 1000   # max population size
+    MS = 10   # default population size
 
     def __init__(self,instance_size):
 

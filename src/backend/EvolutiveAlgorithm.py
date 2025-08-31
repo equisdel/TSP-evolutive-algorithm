@@ -4,6 +4,7 @@ from backend.components.MecSelection import Selection
 from backend.components.MecSurvivorSelection import SurvivorSelection
 from backend.components.MecCrossover import Crossover
 from backend.components.MecMutation import Mutation
+from backend.components.MecConvergence import Convergence
 # for test
 from backend.TSPInstance import TSPInstanceParser
 from PySide6.QtCore import QObject, Signal
@@ -13,7 +14,7 @@ class EvolutiveAlgorithm(QObject):
 
     # when we change from page 3 (parameters) to page 4 (execution) we create this Evolutive Algorithm
     
-    data_updated = Signal(list, list, list)
+    data_updated = Signal(list, list, list)     # actualización del gráfico
 
     def __init__(cls,instance,config):    
         super().__init__()        
@@ -72,8 +73,9 @@ class EvolutiveAlgorithm(QObject):
         try:
 
             cls.load_parameters()       # loads the parameters
+            print("no errors after loading parameters")
             min_gens = cls.const_min_generations
-            gen_counter = 0
+            #gen_counter = 0
 
             # primera generacion
             actual_gen = Generation(mec_initialization=cls.mec_initialization, population_size=cls.const_population_size, instance_size=cls.instance.dimension, origin=cls.const_city_of_origin, instance=cls.instance) # primera generacion
@@ -98,13 +100,14 @@ class EvolutiveAlgorithm(QObject):
             offspring_mutation = Mutation(cls.mec_individual_mutation)
             offspring_selection = Selection(None,internal_selection="uniform_selection")
             survivor_selection = SurvivorSelection(cls.mec_survivor_selection)
+            convergence = Convergence({"min_gens": 10, "max_gens": cls.const_min_generations})
 
-            #while (gen_counter == 0): # convergencia
-            while (gen_counter < min_gens): # convergencia
+            while (not convergence.reached(None)):
+            #while (gen_counter < min_gens): # convergencia
 
                 #print(actual_gen.getBest()[1])
                 #print()
-                print(gen_counter)
+                #print(gen_counter)
                 #print("   Gen #",gen_counter)
                 actual_gen.display()
                 #print("!!:",len(actual_gen.individuals))
@@ -154,16 +157,16 @@ class EvolutiveAlgorithm(QObject):
                     new_individuals.append(new_individual)
 
                 # esto es reemplazo generacional
-                print("loslsl")
                 actual_gen.individuals = survivor_selection.run(actual_gen.individuals,new_individuals)
 
                 # obtencion de la nueva generacion y se repite el ciclo
-                ea.data_updated.emit(best_solutions_gen, best_solutions_exe, [best_solution_abs for x in range (0,cls.const_min_generations)])
-                gen_counter += 1
+                ea.data_updated.emit(best_solutions_gen, best_solutions_exe, [best_solution_abs for _ in range (0,len(best_solutions_gen))])
+                #gen_counter += 1
 
+            print(f"convergio por {convergence.why_reached}")
             cls.data_best_solutions_gen = best_solutions_gen
             cls.data_best_solutions_exe = best_solutions_exe
-            cls.data_best_solutions_abs = [best_solution_abs for x in range (0,cls.const_min_generations)]
+            cls.data_best_solutions_abs = [best_solution_abs for _ in range (0,len(cls.data_best_solutions_gen))]
 
         except Exception as e:
             print(e)
@@ -199,7 +202,6 @@ if __name__=="__main__":
     instance = TSPInstanceParser.parse("./data/instances/ba6.atsp")
     ea = EvolutiveAlgorithm(instance)
     #ea.run()
-    #print(ea.prob_mutation,"[[[[[[]]]]]]")
     print(ea.config["initial population"]["size"])
     #print(ea.data_best_solutions_abs)
 
