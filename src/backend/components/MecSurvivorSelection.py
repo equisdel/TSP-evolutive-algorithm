@@ -23,13 +23,13 @@ class SurvivorSelection():
         return next_gen
 
     # modelo steady_state
-    def mec_survivor_selection_steady_state(self,old_individuals,new_individuals,n=1/len(old_individuals),termination_selection,offspring_selection=None):
-        next_gen = []
+    #def mec_survivor_selection_steady_state(self,old_individuals,new_individuals,n=1/len(old_individuals),termination_selection,offspring_selection=None):
+    #    next_gen = []
         # Iterate old individuals
         # Ruletealos con el mecanismo interno de seleccion o con otra cosa (depende del criterio)
         # Si toca reemplazo selecciono del pool de offsprings (depende del criterio)
         # Reemplazo al actual
-        return next_gen
+    #    return next_gen
 
     def run(self,actual_gen,offspring_pool): # ambas son listas de individuos
         next_gen = self.mec(actual_gen,offspring_pool)
